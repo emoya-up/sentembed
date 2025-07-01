@@ -1,2 +1,6 @@
 *__pycache__
 *cpython*
+
+data/UNPD_*
+data/III*
+data/sent_text_all.csv
