@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from similarity import cosine_similarity
+from compare.similarity import cosine_similarity
 translated = ["This is an example sentence", "Esto es una frase ejemplar"]
 paraphrased = ["This is an example sentence", "Take an example like the following"]
 unrelated = ["This is an example sentence", "Tiene sabor strawberry cheese cake"]
