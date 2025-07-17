@@ -2,7 +2,7 @@ import json
 import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
-from similarity import cosine_similarity
+from .similarity import cosine_similarity
 from torch import Tensor, tensor, matmul, concat
 from types import FunctionType
 from numpyencoder import NumpyEncoder
@@ -26,16 +26,29 @@ class Context():
     This object represents the context between two distinct text witnesses, a
     pair of text segments that serves as a candidate for alignment.
     '''
+    
+    # TODO add code for super- & subsets
+    
+    encoder = SentenceTransformer('sentence-transformers/LaBSE')
+    
     embeddings = [tensor(0), tensor(0)]
     hadamard = tensor(0)
     concat = tensor(0)
     
     pair = [tensor(0), tensor(0)]
     
-    def __init__(self, tokens1, tokens2):
+    def __init__(self, *tokenlists):
         # the intertextual context is generated based on the dimensions
         # of the two target sentences
-        self.embeddings = [tokens1, tokens2]
+        
+        for tList in len(tokenlists):
+            if type(tList) == str:
+                self.embeddings = self.encoder.encode(tList)
+            else:
+                tList.join(" ") #provisional segment concatenation
+                raise ValueError("Token-based text segment must be a string.")
+            
+        return True
     
     def _hadamard(self):
         # copy embeddings
@@ -73,8 +86,6 @@ class Context():
         # calculates basic measures and the alignment quality
         if (len(args) >= 2) or (args[0] not in [0, 1]):
             raise ValueError('Value must be a Boolean')
-        
-        encode()
         
         self._hadamard()
         self._concatenate()
@@ -156,8 +167,9 @@ for k, v in compare(embs, 'data', cosine_similarity).items():
 
 '''
 
-data = ['This is one sentence', 'This is the other']
-data_ = ["C'est une phrase", "Ca, c'est, l'autre"]
+data_en = ['This is one sentence', 'This is the other']
+data_fr = ["C'est une phrase", "Ca, c'est, l'autre"]
 order = ['en', 'fr']
-pair = Context(data[0], data_[0])
+
+pair = Context(data_en, data_fr)
 print(type(pair(True)))
