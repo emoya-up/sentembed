@@ -2,10 +2,11 @@ import json
 import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
-from .similarity import cosine_similarity
 from torch import Tensor, tensor, matmul, concat
 from types import FunctionType
 from numpyencoder import NumpyEncoder
+
+from sklearn.metrics.pairwise import cosine_similarity
 
 # order of languages for toy data
 #order = ['en', 'es', 'ru', 'zh', 'fr']
@@ -31,7 +32,7 @@ class Context():
     
     encoder = SentenceTransformer('sentence-transformers/LaBSE')
     
-    embeddings = [tensor(0), tensor(0)]
+    embeddings = []
     hadamard = tensor(0)
     concat = tensor(0)
     
@@ -41,15 +42,13 @@ class Context():
         # the intertextual context is generated based on the dimensions
         # of the two target sentences
         
-        for tList in len(tokenlists):
-            if type(tList) == str:
-                self.embeddings = self.encoder.encode(tList)
+        for tList in tokenlists:
+            if type(tList[0]) == str:
+                self.embeddings.append(self.encoder.encode(tList))
             else:
                 tList.join(" ") #provisional segment concatenation
                 raise ValueError("Token-based text segment must be a string.")
-            
-        return True
-    
+
     def _hadamard(self):
         # copy embeddings
         placeholder = [x.clone().detach() for x in self.embeddings]
@@ -68,35 +67,50 @@ class Context():
         
         return self.concat
     
-    def _compare(self, datapath: str, embeddings: Tensor):
+    def _compare(self):
         # copy embeddings
-        placeholder = embeddings.clone().detach()
-        # compare (and align) the two text witnesses
-        embeddings = encode(datapath=datapath,
-               savepath='data',
-               modelname='sentence-transformers/LaBSE')
+        embeddings = self.embeddings
+        print(embeddings)
         
+        sim_dict = {}
+        compared_pairs = []
+    
+        # fixed-schedule pair-processing
+        for ln1 in order:
+            for ln2 in order:
+                if {ln1, ln2} not in compared_pairs and ln1 != ln2:
+                    sims = 0
+                    for x in range(embeddings[0].shape[0]):
+                        sims += cosine_similarity(
+                            embeddings[0][x].reshape(1,-1),
+                            embeddings[1][x].reshape(1,-1))
+                    avg_sim = sims/embeddings[0].shape[0]
+                    #print(f"{ln1} and {ln2} average similarity: {sims/emb1.shape[1]}")
+                    sim_dict[ln1+'-'+ln2] = avg_sim
+                    compared_pairs.append({ln1, ln2})
+    
+        # returns dictionary for each language pair sorted by similarity
+        ans = {k: v[0, 0] for k, v in sorted(sim_dict.items(),
+                                              reverse=True,
+                                              key=lambda x: x[1])}
         print('Similarities:')
-        for k, v in compare(embeddings, 'data', cosine_similarity).items():
+        for k, v in ans.items():
             print(f'{k}: {v}')
-        
-        return True
+            
+        return ans
     
     def __call__(self, *args, **kwds):
         # calculates basic measures and the alignment quality
         if (len(args) >= 2) or (args[0] not in [0, 1]):
             raise ValueError('Value must be a Boolean')
         
-        self._hadamard()
-        self._concatenate()
-        
         # args can only be the selection of hadamard or concatenation
         if args[0]:
             self._compare()
-            return self.hadamard
+            #return self.hadamard
         else:
             self._compare()
-            return self.concat
+            #return self.concat
 
 def encode(datapath, savepath, modelname) -> dict[str, list]:
     '''
@@ -167,9 +181,14 @@ for k, v in compare(embs, 'data', cosine_similarity).items():
 
 '''
 
-data_en = ['This is one sentence', 'This is the other']
-data_fr = ["C'est une phrase", "Ca, c'est, l'autre"]
+data_en = ['This is one sentence', 'This is the other', 'This is not a pipe']
+data_fr = ["C'est une phrase", "Ca, c'est, l'autre", "ceci n'est pas une pipe"]
+data_de = ["Das ist ein Satz", "Das ist der andere", "Dies ist keine Pfeife"]
 order = ['en', 'fr']
 
 pair = Context(data_en, data_fr)
-print(type(pair(True)))
+
+pair(True)
+
+if __name__ == "__main__":
+    import sys
