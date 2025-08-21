@@ -1,6 +1,12 @@
+# optimization and platform-specific constructs
 *__pycache__
 *cpython*
+*.egg-info
+.venv
+dist*
 
-data/UNPD_*
+# exclusive or unreliable data
 data/III*
 data/sent_text_all.csv
+data/essay1.csv
+data/kafka*
