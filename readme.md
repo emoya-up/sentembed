@@ -1,8 +1,8 @@
 # Motivation :
 The Critical Edition of Hannah Ahrendt's Complete Work is being released
 [online](https://hannah-arendt-edition.net/home?lang=en).
-To help understand the political theorist's work, I propose a framework
-compatible with the Gothenburg model and LERA (Pöckelmann et al., 2023).
+To help publish the political theorist's work, I propose a framework
+compatible with the Gothenburg model and LERA (Pöckelmann et al., 2023) to synoptically represent the documents in an efficient, yet transparent way.
 
 # Relevant Literature :notebook:
 A structural approach for the segmentation of text witnesses showed success
@@ -11,7 +11,7 @@ Molfese et al. (2024) introduce a fully-neural model to allow for
 contextualized sentence embeddings.
 
 # Directory Structure
-
+``` bash
 │   readme.md
 │   scheduler.lp
 │   similarity.py
@@ -53,8 +53,12 @@ contextualized sentence embeddings.
 ├───preprocessing
 │       analyze.py
 │       preprocessing.py
+```
 
 # References
 Frenzel, S., & Stede, M. (2025). Sentence-Alignment in Semi-parallel Datasets. In A. Kazantseva, S. Szpakowicz, S. Degaetano-Ortlieb, Y. Bizzoni, & J. Pagel (Eds.), Proceedings of the 9th Joint SIGHUM Workshop on Computational Linguistics for Cultural Heritage, Social Sciences, Humanities and Literature (LaTeCH-CLfL 2025) (pp. 87–96). Association for Computational Linguistics. (https://aclanthology.org/2025.latechclfl-1.9/)
 Molfese, F., Bejgu, A., Tedeschi, S., Conia, S., & Navigli, R. (2024). CroCoAlign: A Cross-Lingual, Context-Aware and Fully-Neural Sentence Alignment System for Long Texts (Y. Graham & M. Purver, Eds.; pp. 2209–2220). Association for Computational Linguistics. (https://aclanthology.org/2024.eacl-long.135/)
 Pöckelmann, M., Medek, A., Ritter, J., & Molitor, P. (2023). LERA—an interactive platform for synoptical representations of multiple text witnesses. Digital Scholarship in the Humanities, 38(1), 330–346. (https://doi.org/10.1093/llc/fqac021)
+
+# Status
+Work in progress, no rights reserved
