@@ -1,15 +1,20 @@
 [project]
 name = "sentembed"
-version = "0.1.1"
-description = ""
+version = "0.1.2"
+description = """A python module that allows anyone to normalize, transform, \
+and contextualize text witnesses based on a neural architecture.
+Future features include fair scheduling, a greater text segment variance \
+and higher compatibility with common multi-lingual sentence encoders."""
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "jsonlines>=4.0.0",
     "numpyencoder>=0.3.2",
     "pandas>=2.3.1",
     "scikit-learn>=1.7.1",
     "sentence-transformers>=5.1.0",
     "torch>=2.7.1",
+    "wakepy>=0.10.2.post1",
 ]
 
 [tool.setuptools]

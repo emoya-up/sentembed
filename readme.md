@@ -11,48 +11,31 @@ Molfese et al. (2024) introduce a fully-neural model to allow for
 contextualized sentence embeddings.
 
 # Directory Structure
-
-│   readme.md
-│   scheduler.lp
-│   similarity.py
-│   __init__.py
-│   
-├───compare
-│   │   encode.py
-│   │
-│   └───__pycache__
-│           encode.cpython-312.pyc
-│           encode.cpython-313.pyc
-│
-├───data
-│       embeddings_en.json
-│       embeddings_es.json
-│       embeddings_fr.json
-│       embeddings_ru.json
-│       embeddings_zh.json
-│       mask.json
-│       sent_speeches_all.csv
-│       sent_text_all.csv
-│       UNPD_en.txt
-│       UNPD_es.txt
-│       UNPD_fr.txt
-│       UNPD_ru.txt
-│
-├───embeddings
-│   │   labse.py
-│   │   laser.py
-│   │   __init__.py
-│   │
-│   └───__pycache__
-│           labse.cpython-312.pyc
-│           labse.cpython-313.pyc
-│           similarity.cpython-312.pyc
-│           __init__.cpython-312.pyc
-│           __init__.cpython-313.pyc
-│
-├───preprocessing
-│       analyze.py
-│       preprocessing.py
+``` diff
+# .
+  ├── __init__.py
++ ├── compare
+  │   ├── __init__.py
+  │   ├── context.py
+  │   ├── similarity.py
+  │   └── vis.py
++ ├── data
++ ├── embeddings
+  │   ├── __init__.py
+  │   ├── labse.py
+  │   └── laser.py
+  ├── main.py
++ ├── preprocessing
+  │   ├── __init__.py
+  │   ├── align_kafka.py
+  │   ├── analyze.py
+  │   ├── preprocessing.py
+  │   └── write_parallel.py
+# ├── pyproject.toml
+  ├── readme.md
+  ├── scheduler.lp
+# └── uv.lock
+```
 
 # References
 Frenzel, S., & Stede, M. (2025). Sentence-Alignment in Semi-parallel Datasets. In A. Kazantseva, S. Szpakowicz, S. Degaetano-Ortlieb, Y. Bizzoni, & J. Pagel (Eds.), Proceedings of the 9th Joint SIGHUM Workshop on Computational Linguistics for Cultural Heritage, Social Sciences, Humanities and Literature (LaTeCH-CLfL 2025) (pp. 87–96). Association for Computational Linguistics. (https://aclanthology.org/2025.latechclfl-1.9/)

@@ -2,7 +2,7 @@ import json
 import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
-from torch import Tensor, tensor, matmul, concat
+from torch import Tensor, tensor, mul, concat
 from types import FunctionType
 from numpyencoder import NumpyEncoder
 
@@ -22,6 +22,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # supersets & Boolean differences
 
+# FIXME implement clean metrics, then come back to this class
 class Context():
     '''
     This object represents the context between two distinct text witnesses, a
@@ -41,6 +42,7 @@ class Context():
     def __init__(self, *tokenlists):
         # the intertextual context is generated based on the dimensions
         # of the two target sentences
+        self.embeddings = []
         
         for tList in tokenlists:
             if type(tList[0]) == str:
@@ -54,7 +56,7 @@ class Context():
         placeholder = [x.clone().detach() for x in self.embeddings]
         
         # element-wise multiplication of pairs
-        self.hadamard = matmul(placeholder[0], placeholder[1])
+        self.hadamard = mul(placeholder[0], placeholder[1])
         
         return self.hadamard
     
@@ -103,6 +105,12 @@ class Context():
         # calculates basic measures and the alignment quality
         if (len(args) >= 2) or (args[0] not in [0, 1]):
             raise ValueError('Value must be a Boolean')
+        
+        if len(self.embeddings[0].shape) <= 1:
+            return cosine_similarity(
+                            self.embeddings[0].reshape(1,-1),
+                            self.embeddings[1].reshape(1,-1)
+                            )
         
         # args can only be the selection of hadamard or concatenation
         if args[0]:
@@ -170,25 +178,25 @@ def compare(data, datapath: str, sim_function: FunctionType):
                                           reverse=True,
                                           key=lambda x: x[1])}
 
-'''
-embs = encode('data/sent_speeches_all.csv',
-              'data',
-              'sentence-transformers/LaBSE')
-
-print('Similarities:')
-for k, v in compare(embs, 'data', cosine_similarity).items():
-    print(f'{k}: {v}')
-
-'''
-
-data_en = ['This is one sentence', 'This is the other', 'This is not a pipe']
-data_fr = ["C'est une phrase", "Ca, c'est, l'autre", "ceci n'est pas une pipe"]
-data_de = ["Das ist ein Satz", "Das ist der andere", "Dies ist keine Pfeife"]
-order = ['en', 'fr']
-
-pair = Context(data_en, data_fr)
-
-pair(True)
-
 if __name__ == "__main__":
     import sys
+    
+    '''
+    embs = encode('data/sent_speeches_all.csv',
+                'data',
+                'sentence-transformers/LaBSE')
+
+    print('Similarities:')
+    for k, v in compare(embs, 'data', cosine_similarity).items():
+        print(f'{k}: {v}')
+
+    '''
+
+    data_en = ['This is one sentence', 'This is the other', 'This is not a pipe']
+    data_fr = ["C'est une phrase", "Ca, c'est, l'autre", "ceci n'est pas une pipe"]
+    data_de = ["Das ist ein Satz", "Das ist der andere", "Dies ist keine Pfeife"]
+    order = ['en', 'fr']
+
+    pair = Context(data_en, data_fr)
+
+    pair(True)
