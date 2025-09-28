@@ -98,6 +98,11 @@ class Context():
             
         return ans
     
+    def save_embeddings(self, filename):
+        with open(filename, 'w') as f:
+            json.dump(self.embeddings, f, cls=NumpyEncoder)
+
+
     def __call__(self, *args, **kwds):
         # calculates basic measures and the alignment quality
         if (len(args) >= 2) or (args[0] not in [0, 1]):

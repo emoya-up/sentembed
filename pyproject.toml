@@ -12,6 +12,7 @@ dependencies = [
     "nltk>=3.9.1",
     "numpyencoder>=0.3.2",
     "pandas>=2.3.1",
+    "python-docx>=1.2.0",
     "scikit-learn>=1.7.1",
     "sentence-transformers>=5.1.0",
     "torch>=2.7.1",

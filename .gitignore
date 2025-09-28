@@ -2,8 +2,12 @@
 *__pycache__
 *cpython*
 *.egg-info
-.venv
 dist*
+
+# CI/CD
+.venv
+.vscode
+uv.lock
 
 # exclusive or unreliable data
 data/III*

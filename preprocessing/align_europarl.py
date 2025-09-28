@@ -1,8 +1,10 @@
 import os
 import pandas as pd
 
-path = '../../../europarl-extract-0.9/corpora/corpora/parallel'
-for pair in ['DE-EN', 'FR-EN', 'ES-EN', 'PL-EN']:
+#path = '../../../europarl-extract-0.9/corpora/corpora/parallel'
+path = 'data/europarl_parallel'
+for pair in os.listdir(path):
+    print(pair)
     pairDf = pd.DataFrame(columns=['ln1', 'ln2'])
     tabs = os.listdir(f'{path}/{pair}/tab/')
     for t in tabs:
@@ -13,8 +15,8 @@ for pair in ['DE-EN', 'FR-EN', 'ES-EN', 'PL-EN']:
                 ignore_index=True
                 )
         except KeyboardInterrupt:
-            pairDf.to_csv(f'data/{pair}.csv')
+            pairDf.to_csv(f'data/train/{pair}.csv')
             exit()
         except pd.errors.ParserError:
             continue
-    pairDf.to_csv(f'data/{pair}.csv')
+    pairDf.to_csv(f'data/train/{pair}.csv')
