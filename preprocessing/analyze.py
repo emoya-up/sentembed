@@ -31,6 +31,4 @@ def analyze(corpus_path: str, field_names: list) -> dict:
     return stats 
 
 print(analyze('data/sent_speeches_all.csv', ['en', 'es', 'ru', 'zh', 'fr']))
-
-# TODO do all this using pd.DataFrame.apply
     

@@ -1,9 +1,12 @@
 import pandas as pd
 import torch.nn as nn
 
-## adequate versions of cosine similarity
+# adequate versions of cosine similarity
 from sklearn.metrics.pairwise import cosine_similarity
 from torch.nn import CosineEmbeddingLoss
+
+# trivial version of the BLEU score (takes string input)
+from nltk.translate.bleu_score import sentence_bleu
 
 # internal
 from .context import Context
@@ -13,15 +16,13 @@ dummy_df = pd.DataFrame({
     'latin' : ['alpha', 'beta', 'gamma'] * 8})
 
 ## Jaccard metric (mostly pairwise)
-def jaccard_metric(context: Context,
+def jaccard_metric(#context: Context,
                    data: pd.DataFrame,
                    decision_func=cosine_similarity,
                    threshold=.5,
                    yields=False):
-    # TODO embed the text segments with variable encoders
-    # TODO enable comparison of one or more
     '''
-    This Jaccard metric measures the distance of n sets.
+    This Jaccard metric measures the distance of 2 sets.
     The function reports the average of a binary decision on all rows
     in a pd.DataFrame.
     args:
@@ -31,6 +32,11 @@ def jaccard_metric(context: Context,
     returns (or yields):
         dict with averages of the binary Jaccard
     '''
+
+    # # confirm that the context is empty
+    # if len(context.embeddings) != 0:
+    #     return False
+    
     cols = data.columns
     seen_pairs = {}
     
@@ -39,41 +45,37 @@ def jaccard_metric(context: Context,
         avg_sim = 0
         for ln2 in cols:
             if f'{ln1, ln2}' not in seen_pairs and ln1 != ln2:
+                # encode the two text segments
+                context = Context(data[ln1].to_list()[1:], data[ln2].to_list()[1:])
+
                 # apply the decision function to two text segments
                 try:
-                    pairwise_cos = data[[ln1, ln2]].apply(
-                        lambda x: decision_func(x),
-                        axis=0,
-                        raw=True)
+                    avg_sim = decision_func(context.embeddings[0], context.embeddings[1])
                 except TypeError as e:
-                    raise NotImplementedError(
-                        'Encoder retrieval not yet implemented')
-                
+                    print(e)
                 
                 # register the language pair as seen
                 seen_pairs[f'{ln1, ln2}'] = avg_sim
-        
-    print(seen_pairs)
     
     if yields:
-        #TODO implement mode that yields the similarities in a loop
+        # TODO (optional) implement mode that yields the similarities in a loop
         # this allows for a pairwise jaccard metric
         pass
     else:
+        # returns similarity based on decision function
         return seen_pairs
+    
+
+## pairwise inner product for matrices
+def pairwiseInnerProduct():
+    pass
 
 # print output (formats)
 if __name__ == "__main__":
     import sys
-    
-    print(dummy_df.head())
-    pairwise_dict = jaccard_metric(context=Context(), data=dummy_df)
-    print(pairwise_dict)
 
+    arendt_df = pd.read_csv('data/arendt_kafka_1to1.csv', names=['de1', 'de2'], index_col=0)
+    arendt_acs = jaccard_metric(arendt_df, cosine_similarity)
 
-## TODO implement trivial version of the BLEU metric
+    print(arendt_acs)
 
-## TODO implement modified version of the BLEU metric
-
-## TODO implement pairwise inner product for matrices
-# see torch.nn.CosineEmbeddingsLoss

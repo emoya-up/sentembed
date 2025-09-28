@@ -22,14 +22,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # supersets & Boolean differences
 
-# FIXME implement clean metrics, then come back to this class
 class Context():
     '''
     This object represents the context between two distinct text witnesses, a
     pair of text segments that serves as a candidate for alignment.
     '''
-    
-    # TODO add code for super- & subsets
     
     encoder = SentenceTransformer('sentence-transformers/LaBSE')
     
@@ -180,23 +177,14 @@ def compare(data, datapath: str, sim_function: FunctionType):
 
 if __name__ == "__main__":
     import sys
-    
-    '''
-    embs = encode('data/sent_speeches_all.csv',
-                'data',
-                'sentence-transformers/LaBSE')
-
-    print('Similarities:')
-    for k, v in compare(embs, 'data', cosine_similarity).items():
-        print(f'{k}: {v}')
-
-    '''
 
     data_en = ['This is one sentence', 'This is the other', 'This is not a pipe']
     data_fr = ["C'est une phrase", "Ca, c'est, l'autre", "ceci n'est pas une pipe"]
     data_de = ["Das ist ein Satz", "Das ist der andere", "Dies ist keine Pfeife"]
     order = ['en', 'fr']
 
+    # register dummy data in context
     pair = Context(data_en, data_fr)
 
+    # run protected similarity comparison
     pair(True)
