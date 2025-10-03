@@ -4,7 +4,6 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer
 from torch import Tensor, tensor, mul, concat
 from types import FunctionType
-from numpyencoder import NumpyEncoder
 
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -28,8 +27,9 @@ class Context():
     pair of text segments that serves as a candidate for alignment.
     '''
     
-    encoder = SentenceTransformer('sentence-transformers/LaBSE')
+    #encoder = SentenceTransformer('sentence-transformers/LaBSE')
     #encoder = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    encoder = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
     
     token_lists = []
     embeddings = []
@@ -100,10 +100,6 @@ class Context():
             print(f'{k}: {v}')
             
         return ans
-    
-    def save_embeddings(self, filename):
-        with open(filename, 'w') as f:
-            json.dump(self.embeddings, f, cls=NumpyEncoder)
 
 
     def __call__(self, *args, **kwds):

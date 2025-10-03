@@ -1,11 +1,9 @@
 import os
 import argparse
 import pandas as pd
-import torch.nn as nn
 
 # adequate versions of cosine similarity
 from sklearn.metrics.pairwise import cosine_similarity
-from torch.nn import CosineEmbeddingLoss
 
 # trivial version of the BLEU score (takes string input)
 from nltk.translate.bleu_score import sentence_bleu
@@ -28,7 +26,7 @@ args = parser.parse_args()
 # paths to the relevant data
 paths = {
     'europarl': [f'data/europarl/{file}' for file in os.listdir('data/europarl/')],
-    'apa-rst': ['data/apa_rst_3way.csv'],
+    'apa-rst': ['data/apa-rst_3way.csv'],
     'arendt': ['data/arendt/arendt_kafka_1to1.csv', 'data/arendt/essay1.csv']}
 
 # dummy dataframe for testing
@@ -61,7 +59,7 @@ def jaccard_metric(data: pd.DataFrame,
     for ln1 in cols:
         for ln2 in cols:
             if f'{ln1, ln2}' not in seen_pairs.keys() and \
-                    f'{ln2, ln1}' not in seen_pairs.key() and \
+                    f'{ln2, ln1}' not in seen_pairs.keys() and \
                     ln1 != ln2:
                 # encode the two text segments
                 context = Context(data_df[ln1].to_list()[1:], data_df[ln2].to_list()[1:])
@@ -135,7 +133,7 @@ if __name__ == "__main__":
         print(aligned_df.head())
         
         average_similarity = jaccard_metric(aligned_df, cosine_similarity)
-        report_similarity(average_similarity, 'latex', f'results/{args.dataset}_{i}')
+        report_similarity(average_similarity, 'latex', f'results/{args.dataset}_{i}_multi_miniLM')
 
     # arendt_df = pd.read_csv('data/arendt_kafka_1to1.csv', names=['de1', 'de2'], index_col=0)
     # arendt_acs = jaccard_metric(arendt_df, cosine_similarity)
