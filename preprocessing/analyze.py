@@ -28,7 +28,13 @@ def analyze(corpus_path: str, field_names: list) -> dict:
     for ln in field_names:
         stats[ln]['avg'] = np.divide(stats[ln]['token_count'], corpus.index.size)
         stats[ln]['unique'] = len(unique[ln])
+        
+    df = pd.DataFrame.from_dict(stats, orient='index')
+    df.to_latex('corpus_stats.tex', float_format="%.2f")
+    
     return stats 
 
 print(analyze('data/sent_speeches_all.csv', ['en', 'es', 'ru', 'zh', 'fr']))
+print(analyze('data/europarl/europarl_4way.csv', ['de', 'en', 'es', 'fr', 'pl']))
+print(analyze('data/apa-rst_3way.csv', ['A2 sentence', 'B1 sentence', 'OR sentence']))
     

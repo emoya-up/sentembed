@@ -9,6 +9,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "jsonlines>=4.0.0",
+    "mwtokenizer>=0.2.0",
     "nltk>=3.9.1",
     "numpyencoder>=0.3.2",
     "pandas>=2.3.1",

@@ -29,7 +29,9 @@ class Context():
     '''
     
     encoder = SentenceTransformer('sentence-transformers/LaBSE')
+    #encoder = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
     
+    token_lists = []
     embeddings = []
     hadamard = tensor(0)
     concat = tensor(0)
@@ -43,6 +45,7 @@ class Context():
         
         for tList in tokenlists:
             if type(tList[0]) == str:
+                self.token_lists.append(tList)
                 self.embeddings.append(self.encoder.encode(tList))
             else:
                 tList.join(" ") #provisional segment concatenation
@@ -66,7 +69,7 @@ class Context():
         
         return self.concat
     
-    def _compare(self):
+    def _compare(self, sim_function=cosine_similarity):
         # copy embeddings
         embeddings = self.embeddings
         print(embeddings)
@@ -80,7 +83,7 @@ class Context():
                 if {ln1, ln2} not in compared_pairs and ln1 != ln2:
                     sims = 0
                     for x in range(embeddings[0].shape[0]):
-                        sims += cosine_similarity(
+                        sims += sim_function(
                             embeddings[0][x].reshape(1,-1),
                             embeddings[1][x].reshape(1,-1))
                     avg_sim = sims/embeddings[0].shape[0]
@@ -114,13 +117,7 @@ class Context():
                             self.embeddings[1].reshape(1,-1)
                             )
         
-        # args can only be the selection of hadamard or concatenation
-        if args[0]:
-            self._compare()
-            #return self.hadamard
-        else:
-            self._compare()
-            #return self.concat
+        return self._compare() if args[0] else False
 
 def encode(datapath, savepath, modelname) -> dict[str, list]:
     '''
