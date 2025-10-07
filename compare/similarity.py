@@ -27,7 +27,7 @@ args = parser.parse_args()
 paths = {
     'europarl': [f'data/europarl/{file}' for file in os.listdir('data/europarl/')],
     'apa-rst': ['data/apa-rst_3way.csv'],
-    'arendt': ['data/arendt/arendt_kafka_1to1.csv', 'data/arendt/essay1.csv']}
+    'arendt': ['data/arendt/essay1.csv', 'data/arendt/arendt_kafka_1to1.csv', ]}
 
 # dummy dataframe for testing
 # dummy_df = pd.DataFrame({
@@ -70,7 +70,10 @@ def jaccard_metric(data: pd.DataFrame,
                     source = context.embeddings[0][x].reshape(1, -1)
                     target = context.embeddings[1][x].reshape(1, -1)
                     
-                    average_sim += decision_func(source, target)
+                    sim = decision_func(source, target)
+                    # output for latex
+                    # print(f"{x} & {context.token_lists[0][x]} & {context.token_lists[1][x]} & {sim[0,0]:.2f}\\\\")
+                    average_sim += sim
                         
                 average_sim = average_sim / context.embeddings[0].shape[0]
                 
@@ -78,8 +81,7 @@ def jaccard_metric(data: pd.DataFrame,
                 seen_pairs[f'{ln1, ln2}'] = average_sim
     
     if yields:
-        # TODO (optional) implement mode that yields the similarities in a loop
-        # this allows for a pairwise jaccard metric
+        # TODO (optional) implement mode that yields the similarities for a loop
         pass
     else:
         # returns similarity based on decision function
@@ -88,7 +90,7 @@ def jaccard_metric(data: pd.DataFrame,
 
 # pairwise inner product for matrices
 def pairwiseInnerProduct():
-    pass
+    raise NotImplementedError()
 
 # report on similarity
 def report_similarity(similarity_dict, output_format='docx', filename='similarity_report'):
@@ -125,6 +127,10 @@ def report_similarity(similarity_dict, output_format='docx', filename='similarit
     else:
         raise ValueError("Unsupported format. Use 'docx' or 'latex'.")
 
+def visualize_invariance(dict):
+    raise NotImplementedError()
+    
+
 if __name__ == "__main__":
     import sys
 
@@ -133,9 +139,8 @@ if __name__ == "__main__":
         print(aligned_df.head())
         
         average_similarity = jaccard_metric(aligned_df, cosine_similarity)
-        report_similarity(average_similarity, 'latex', f'results/{args.dataset}_{i}_multi_miniLM')
+        report_similarity(average_similarity, 'latex', f'results/{args.dataset}_{i}_indepth')
+        
+        # visualize the invariance with a seaborn heatmap
+        # visualize_invariance()
 
-    # arendt_df = pd.read_csv('data/arendt_kafka_1to1.csv', names=['de1', 'de2'], index_col=0)
-    # arendt_acs = jaccard_metric(arendt_df, cosine_similarity)
-
-    # report_similarity(arendt_acs, 'latex', 'arendt_default')

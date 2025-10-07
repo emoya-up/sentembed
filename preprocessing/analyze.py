@@ -37,4 +37,5 @@ def analyze(corpus_path: str, field_names: list) -> dict:
 print(analyze('data/sent_speeches_all.csv', ['en', 'es', 'ru', 'zh', 'fr']))
 print(analyze('data/europarl/europarl_4way.csv', ['de', 'en', 'es', 'fr', 'pl']))
 print(analyze('data/apa-rst_3way.csv', ['A2 sentence', 'B1 sentence', 'OR sentence']))
+#print(analyze('data/arendt_2wayforstats.csv', ['de', 'en']))
     
