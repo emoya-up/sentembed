@@ -1,6 +1,25 @@
+# optimization and platform-specific constructs
 *__pycache__
 *cpython*
+*.egg-info
+dist*
 
-data/UNPD_*
+# CI/CD
+.venv
+.vscode
+
+# unfinished scripts
+compare/robustness.py
+
+# exclusive or unaligned data
 data/III*
 data/sent_text_all.csv
+data/kafka*
+
+# too large to upload
+data/europarl/DE-EN.csv
+data/europarl/ES-EN.csv
+data/europarl/FR-EN.csv
+data/europarl/PL-EN.csv
+
+data/embedded*
